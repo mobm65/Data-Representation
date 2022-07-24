@@ -1,84 +1,128 @@
-import mysql.connector
+from mysqlconnect import connect
+
 
 class FilmDAO:
-    db = ""
     def __init__(self):
-        self.db = mysql.connector.connect(
-            host = "localhost"
-            user = "root"
-            password = "root"
-            database = "film"
-        )
-        
-def create(self, film):
-    cursor = self.db.cursor()
-    sql = "insert into film (id, name, director, genre, classification) values (%s,%s,%s,%s,%s)"
-    values = [
-        film["id"], 
-        film["name"], 
-        film["director"], 
-        film["genre"], 
-        film["classification"]
+        self.db = connect()
+
+    def create(self, film):
+        cursor = self.db.cursor()
+        sql = "insert into classifyfilm (name, director, filmgenre, filmclassification) values (%s,%s,%s,%s)"
+        values = [
+            film["name"],
+            film["director"],
+            film["filmgenre"],
+            film["filmclassification"]
         ]
-    cursor.execute(sql, values)
-    self.db.commit()
-    return cursor.lastrowid
+        cursor.execute(sql, values)
+        self.db.commit()
+        return cursor.lastrowid
 
-def getAll(self):
-    cursor = self.db.cursor()
-    sql = "select * from film"
-    cursor.execute(sql)
-    results=cursor.fetchall()
-# store in array 
-    returnArray = []
-    for result in results:
-        resultAsDict = self.converttoDict(result)
-        returnArray.append(resultAsDict)
-    
-    return returnArray
+    def getAll(self):
+        cursor = self.db.cursor()
+        sql = "select * from classifyfilm"
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        # store in array
+        returnArray = []
+        for result in results:
+            resultAsDict = convertToDict(result)
+            returnArray.append(resultAsDict)
 
-def findByid(self, id):
-    cursor = self.db.cursor()
-    sql = "select * from film where id = %s"
-    values = ["id"]
-    cursor.execute(sql, values)
-    result=cursor.fetchone()
-    return self.convertToDict(result)
+        return returnArray
 
+    def findByid(self, id):
+        cursor = self.db.cursor()
+        sql = "select * from classifyfilm where id = %s"
+        values = [id]
+        cursor.execute(sql, values)
+        result = cursor.fetchone()
+        return convertToDict(result)
 
-
-
-def update(self, film):
-    cursor = self.db.cursor()
-    sql = "update film set name = %s,  director =%s, genre = %s, classification = %s where id = %s"
-    values = [
-        film["name"], 
-        film["director"], 
-        film["genre"], 
-        film["classification"],
-        film["id"]
+    def update(self, film):
+        cursor = self.db.cursor()
+        sql = "update classifyfilm set name = %s,  director =%s, filmgenre = %s, filmclassification = %s where id = %s"
+        values = [
+            film["name"],
+            film["director"],
+            film["filmgenre"],
+            film["filmclassification"],
+            film["id"]
         ]
-    cursor.execute(sql, values)
-    self.db.commit()
-    return film
+        cursor.execute(sql, values)
+        self.db.commit()
+        return film
 
-def delete(self, id):
-    cursor = self.db.cursor()
-    sql = "delete from film where id = %s"
-    values = ["id"]
-    cursor.execute(sql, values)
-    
-    return{}
+    def delete(self, id):
+        cursor = self.db.cursor()
+        sql = "delete from classifyfilm where id = %s"
+        values = [id]
+        cursor.execute(sql, values)
+        self.db.commit()
+        return{}
 
-def convertToDict(self, result):
-    colnames = ["id", "name", "director", "filmgenre", "filmclassification"]
+
+def convertToDict(result):
+    colnames = ["id", "name", "director",
+                "filmgenre", "filmclassification"]
     film = {}
 
     if result:
-        for i , colname in enumerate(colnames):
+        for i, colname in enumerate(colnames):
             value = result[i]
             film[colname] = value
-    return film        
-FilmDAO = FilmDAO()
+    return film
 
-print("connection made")
+
+film_dao = FilmDAO()
+
+
+def get_film_dao():
+    return film_dao
+
+
+def main():
+    print('Get All:')
+    films = film_dao.getAll()
+    print(films)
+
+    print('Get First Film:')
+    print(film_dao.findByid(films[0]["id"]))
+
+    print('Create new Film:')
+    new_film = {}
+    new_film["name"] = 'Batman Begins'
+    new_film["director"] = 'Christopher Nolan'
+    new_film["filmgenre"] = 'action adventure'
+    new_film["filmclassification"] = 'pg'
+    new_film["id"] = film_dao.create(new_film)
+
+    # Make sure new film can be selected
+    if new_film != film_dao.findByid(new_film["id"]):
+        print('New film not created properly')
+        return
+    else:
+        print(new_film)
+
+    print('Update new Film:')
+    new_film["filmgenre"] = 'superhero'
+    film_dao.update(new_film)
+
+    # Make film is updated
+    if new_film != film_dao.findByid(new_film["id"]):
+        print('New film did not update')
+        return
+    else:
+        print(new_film)
+
+    print('Delete new Film:')
+    film_dao.delete(new_film["id"])
+
+    if {} != film_dao.findByid(new_film["id"]):
+        print('New film did not delete')
+    else:
+        print("Deleted:", new_film["id"])
+
+
+if __name__ == '__main__':
+    main()

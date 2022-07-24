@@ -7,9 +7,16 @@ db = mysql.connector.connect(
     database = "film"
 )
 
-cursor = db.cursor()
-sql = "Select * from classifyfilm"
+def connect():
+    return db
 
-cursor.execute(sql)
-for (id, name, director, genre, classification) in cursor:
-    print(name)
+def main():
+    cursor = db.cursor()
+    sql = "Select * from classifyfilm"
+
+    cursor.execute(sql)
+    for (id, name, director, genre, classification) in cursor:
+        print(name)
+
+if __name__ == '__main__':
+    main()
