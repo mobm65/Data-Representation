@@ -17,7 +17,7 @@ def getAll():
 def findById(id):
     return jsonify(film_dao.findByid(id))
 
-# create
+# create, update, delete
 # curl--X-POST--d-"{\"name\":\"test\", \"director\":\"guygal\", \"genre\":\"type\", \"classification\":\"val\}"
 # -http://127.0.0.1:5000/film
 
