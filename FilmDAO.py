@@ -1,6 +1,6 @@
 from mysqlconnect import connect
 
-
+# Data access for film
 class FilmDAO:
     def __init__(self):
         self.db = connect()
@@ -31,6 +31,7 @@ class FilmDAO:
 
         return returnArray
 
+    # find film by id
     def findByid(self, id):
         cursor = self.db.cursor()
         sql = "select * from classifyfilm where id = %s"
@@ -39,6 +40,7 @@ class FilmDAO:
         result = cursor.fetchone()
         return convertToDict(result)
 
+    # update film
     def update(self, film):
         cursor = self.db.cursor()
         sql = "update classifyfilm set name = %s,  director =%s, filmgenre = %s, filmclassification = %s where id = %s"
@@ -53,6 +55,7 @@ class FilmDAO:
         self.db.commit()
         return film
 
+    # delete film
     def delete(self, id):
         cursor = self.db.cursor()
         sql = "delete from classifyfilm where id = %s"
@@ -61,7 +64,7 @@ class FilmDAO:
         self.db.commit()
         return{}
 
-
+# Convert result from database to dict.
 def convertToDict(result):
     colnames = ["id", "name", "director",
                 "filmgenre", "filmclassification"]
@@ -80,7 +83,7 @@ film_dao = FilmDAO()
 def get_film_dao():
     return film_dao
 
-
+# testing
 def main():
     print('Get All:')
     films = film_dao.getAll()

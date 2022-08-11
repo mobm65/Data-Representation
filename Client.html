@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Client</title>
+        <script src="client-script.js"></script>
+    </head>
+    <body>
+        <h2>Film Table</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>name</th>
+                    <th>director</th>
+                    <th>filmgenre</th>
+                    <th>filmclassification</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="tablebody">
+
+            </tbody>
+        </table>
+        <hr />
+        
+        <h2>Add Film</h2>
+        <form>
+            <label for="name">name:</label><br>
+            <input type="text" id="name" name="name"><br>
+            <label for="name">director:</label><br>
+            <input type="text" id="director" name="director"><br>
+            <label for="name">filmgenre:</label><br>
+            <input type="text" id="filmgenre" name="filmgenre"><br>
+            <label for="name">filmclassification:</label><br>
+            <input type="text" id="filmclassification" name="filmclassification"><br>
+            <input type="button" onclick="addFilm()" value="Submit">
+        </form>
+    </body>
+</html>

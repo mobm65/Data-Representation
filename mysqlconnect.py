@@ -7,9 +7,11 @@ db = mysql.connector.connect(
     database = "film"
 )
 
+# get database connection
 def connect():
     return db
 
+# test database connection
 def main():
     cursor = db.cursor()
     sql = "Select * from classifyfilm"
